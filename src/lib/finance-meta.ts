@@ -1,0 +1,1 @@
+export function financeHead(title: string, description: string) { return { meta: [{title:`${title} · Mis Finanzas`},{name:"description",content:description},{property:"og:title",content:`${title} · Mis Finanzas`},{property:"og:description",content:description},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}] }; }
