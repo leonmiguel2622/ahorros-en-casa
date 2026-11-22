@@ -28,3 +28,10 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Application architecture
+- Keep the TanStack Start route bootstrap; the sandbox cannot access a user's local Windows folder, so the hosted implementation uses the supported React structure.
+- Put financial calculations and validation in `src/lib/finance.ts`, separate from presentation, so every view shares testable accounting rules.
+- Persist the versioned ledger through `FinanceProvider` in browser storage only, as explicitly requested for a project without a backend; read after hydration and validate before saving.
+- Save budget overrides by calendar month rather than mutating the defaults, so historical budgets and movements remain independent.
+- Render each financial section on its own route using the shared application shell and semantic design tokens; this preserves navigation and consistent presentation.

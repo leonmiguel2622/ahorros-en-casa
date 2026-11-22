@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AhorrosRouteImport } from './routes/ahorros'
+import { Route as ConfiguracionRouteImport } from './routes/configuracion'
+import { Route as GastosRouteImport } from './routes/gastos'
+import { Route as IngresosRouteImport } from './routes/ingresos'
+import { Route as MovimientosRouteImport } from './routes/movimientos'
+import { Route as PresupuestosRouteImport } from './routes/presupuestos'
+import { Route as ReportesRouteImport } from './routes/reportes'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AhorrosRoute = AhorrosRouteImport.update({
+  id: '/ahorros',
+  path: '/ahorros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfiguracionRoute = ConfiguracionRouteImport.update({
+  id: '/configuracion',
+  path: '/configuracion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GastosRoute = GastosRouteImport.update({
+  id: '/gastos',
+  path: '/gastos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IngresosRoute = IngresosRouteImport.update({
+  id: '/ingresos',
+  path: '/ingresos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MovimientosRoute = MovimientosRouteImport.update({
+  id: '/movimientos',
+  path: '/movimientos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PresupuestosRoute = PresupuestosRouteImport.update({
+  id: '/presupuestos',
+  path: '/presupuestos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportesRoute = ReportesRouteImport.update({
+  id: '/reportes',
+  path: '/reportes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ahorros': typeof AhorrosRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/gastos': typeof GastosRoute
+  '/ingresos': typeof IngresosRoute
+  '/movimientos': typeof MovimientosRoute
+  '/presupuestos': typeof PresupuestosRoute
+  '/reportes': typeof ReportesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ahorros': typeof AhorrosRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/gastos': typeof GastosRoute
+  '/ingresos': typeof IngresosRoute
+  '/movimientos': typeof MovimientosRoute
+  '/presupuestos': typeof PresupuestosRoute
+  '/reportes': typeof ReportesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ahorros': typeof AhorrosRoute
+  '/configuracion': typeof ConfiguracionRoute
+  '/gastos': typeof GastosRoute
+  '/ingresos': typeof IngresosRoute
+  '/movimientos': typeof MovimientosRoute
+  '/presupuestos': typeof PresupuestosRoute
+  '/reportes': typeof ReportesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/ahorros'
+    | '/configuracion'
+    | '/gastos'
+    | '/ingresos'
+    | '/movimientos'
+    | '/presupuestos'
+    | '/reportes'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/ahorros'
+    | '/configuracion'
+    | '/gastos'
+    | '/ingresos'
+    | '/movimientos'
+    | '/presupuestos'
+    | '/reportes'
+  id:
+    | '__root__'
+    | '/'
+    | '/ahorros'
+    | '/configuracion'
+    | '/gastos'
+    | '/ingresos'
+    | '/movimientos'
+    | '/presupuestos'
+    | '/reportes'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AhorrosRoute: typeof AhorrosRoute
+  ConfiguracionRoute: typeof ConfiguracionRoute
+  GastosRoute: typeof GastosRoute
+  IngresosRoute: typeof IngresosRoute
+  MovimientosRoute: typeof MovimientosRoute
+  PresupuestosRoute: typeof PresupuestosRoute
+  ReportesRoute: typeof ReportesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ahorros': {
+      id: '/ahorros'
+      path: '/ahorros'
+      fullPath: '/ahorros'
+      preLoaderRoute: typeof AhorrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuracion': {
+      id: '/configuracion'
+      path: '/configuracion'
+      fullPath: '/configuracion'
+      preLoaderRoute: typeof ConfiguracionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gastos': {
+      id: '/gastos'
+      path: '/gastos'
+      fullPath: '/gastos'
+      preLoaderRoute: typeof GastosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ingresos': {
+      id: '/ingresos'
+      path: '/ingresos'
+      fullPath: '/ingresos'
+      preLoaderRoute: typeof IngresosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/movimientos': {
+      id: '/movimientos'
+      path: '/movimientos'
+      fullPath: '/movimientos'
+      preLoaderRoute: typeof MovimientosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/presupuestos': {
+      id: '/presupuestos'
+      path: '/presupuestos'
+      fullPath: '/presupuestos'
+      preLoaderRoute: typeof PresupuestosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reportes': {
+      id: '/reportes'
+      path: '/reportes'
+      fullPath: '/reportes'
+      preLoaderRoute: typeof ReportesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AhorrosRoute: AhorrosRoute,
+  ConfiguracionRoute: ConfiguracionRoute,
+  GastosRoute: GastosRoute,
+  IngresosRoute: IngresosRoute,
+  MovimientosRoute: MovimientosRoute,
+  PresupuestosRoute: PresupuestosRoute,
+  ReportesRoute: ReportesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

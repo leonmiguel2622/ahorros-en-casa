@@ -1,16 +1,125 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_DATA, DEFAULT_BUDGET, DEFAULT_SALARY, netSalary, summarize, progress, movementSchema, type Movement } from "@/lib/finance";
+import {
+  DEFAULT_DATA,
+  DEFAULT_BUDGET,
+  DEFAULT_SALARY,
+  netSalary,
+  summarize,
+  progress,
+  movementSchema,
+  type Movement,
+} from "@/lib/finance";
 
-const movement = (type: Movement["type"], amount: number, category: string, date = "2026-11-21"): Movement => ({ id: `${type}-${category}`, type, amount, category, date, description: category, method: "Transferencia", notes: "", goalId: "" });
+const movement = (
+  type: Movement["type"],
+  amount: number,
+  category: string,
+  date = "2026-11-21",
+): Movement => ({
+  id: `${type}-${category}`,
+  type,
+  amount,
+  category,
+  date,
+  description: category,
+  method: "Transferencia",
+  notes: "",
+  goalId: "",
+});
 describe("Reglas financieras de Miguel", () => {
-  it("excluye el auxilio de las deducciones y calcula el neto de 1.859.928", () => { expect(Math.round(DEFAULT_SALARY.base * .04)).toBe(70036); expect(netSalary(DEFAULT_SALARY)).toBe(1859928); });
-  it("asigna los cuatro presupuestos reales sin exceder el neto", () => { expect(DEFAULT_BUDGET).toEqual({ transport: 242000, savings: 500000, home: 500000, personal: 617928 }); expect(Object.values(DEFAULT_BUDGET).reduce((a,b)=>a+b,0)).toBe(1859928); });
-  it("no cuenta el ingreso estimado como dinero recibido", () => { const result = summarize(DEFAULT_DATA, "2026-11"); expect(result.income).toBe(0); expect(result.available).toBe(0); });
-  it("mantiene 617.928 disponibles al cumplir los compromisos sin descontarlos dos veces", () => { const data = { ...DEFAULT_DATA, movements: [movement("income",1859928,"Salario"), movement("saving",500000,"Ahorro"), movement("expense",500000,"Aporte en casa"), movement("expense",11000,"Transporte")] }; const result = summarize(data,"2026-11"); expect(result.available).toBe(617928); expect(result.expenses).toBe(511000); expect(result.used.savings).toBe(500000); expect(result.reserved).toBe(231000); });
-  it("descuenta el gasto personal del dinero libre y no bloquea un exceso", () => { const result = summarize({ ...DEFAULT_DATA, movements:[movement("income",1859928,"Salario"),movement("expense",700000,"Compras personales")] },"2026-11"); expect(result.used.personal).toBe(700000); expect(result.budget.personal-result.used.personal).toBe(-82072); expect(result.available).toBe(0); });
-  it("separa los meses y acumula solamente las transferencias al ahorro", () => { const result = summarize({ ...DEFAULT_DATA, movements:[movement("saving",500000,"Ahorro","2026-10-01"),movement("saving",250000,"Ahorro")] },"2026-11"); expect(result.used.savings).toBe(250000); expect(result.accumulated).toBe(750000); expect(result.budget.savings).toBe(500000); });
-  it("calcula el progreso de la meta de 500.000 y protege la división por cero",()=> { expect(progress(250000,500000)).toBe(50); expect(progress(250000,0)).toBe(0); });
-  it("editar o eliminar recalcula el saldo a partir de movimientos únicos",()=> { const income=movement("income",1859928,"Salario"); const spending=movement("expense",50000,"Alimentación"); expect(summarize({...DEFAULT_DATA,movements:[income,spending]},"2026-11").available).toBe(567928); expect(summarize({...DEFAULT_DATA,movements:[income,{...spending,amount:20000}]},"2026-11").available).toBe(597928); expect(summarize({...DEFAULT_DATA,movements:[income]},"2026-11").available).toBe(617928); });
-  it("editar noviembre no altera los presupuestos de octubre",()=> { const data={...DEFAULT_DATA,budgets:{"2026-11":{...DEFAULT_BUDGET,transport:300000}}}; expect(summarize(data,"2026-10").budget.transport).toBe(242000); expect(summarize(data,"2026-11").budget.transport).toBe(300000); });
-  it("valida cantidades positivas, pesos enteros y fechas reales",()=> { expect(movementSchema.safeParse(movement("expense",-1,"Transporte")).success).toBe(false); expect(movementSchema.safeParse(movement("expense",1.5,"Transporte")).success).toBe(false); expect(movementSchema.safeParse(movement("expense",3000,"Transporte","2026-02-30")).success).toBe(false); });
+  it("excluye el auxilio de las deducciones y calcula el neto de 1.859.928", () => {
+    expect(Math.round(DEFAULT_SALARY.base * 0.04)).toBe(70036);
+    expect(netSalary(DEFAULT_SALARY)).toBe(1859928);
+  });
+  it("asigna los cuatro presupuestos reales sin exceder el neto", () => {
+    expect(DEFAULT_BUDGET).toEqual({
+      transport: 242000,
+      savings: 500000,
+      home: 500000,
+      personal: 617928,
+    });
+    expect(Object.values(DEFAULT_BUDGET).reduce((a, b) => a + b, 0)).toBe(1859928);
+  });
+  it("no cuenta el ingreso estimado como dinero recibido", () => {
+    const result = summarize(DEFAULT_DATA, "2026-11");
+    expect(result.income).toBe(0);
+    expect(result.available).toBe(0);
+  });
+  it("mantiene 617.928 disponibles al cumplir los compromisos sin descontarlos dos veces", () => {
+    const data = {
+      ...DEFAULT_DATA,
+      movements: [
+        movement("income", 1859928, "Salario"),
+        movement("saving", 500000, "Ahorro"),
+        movement("expense", 500000, "Aporte en casa"),
+        movement("expense", 11000, "Transporte"),
+      ],
+    };
+    const result = summarize(data, "2026-11");
+    expect(result.available).toBe(617928);
+    expect(result.expenses).toBe(511000);
+    expect(result.used.savings).toBe(500000);
+    expect(result.reserved).toBe(231000);
+  });
+  it("descuenta el gasto personal del dinero libre y no bloquea un exceso", () => {
+    const result = summarize(
+      {
+        ...DEFAULT_DATA,
+        movements: [
+          movement("income", 1859928, "Salario"),
+          movement("expense", 700000, "Compras personales"),
+        ],
+      },
+      "2026-11",
+    );
+    expect(result.used.personal).toBe(700000);
+    expect(result.budget.personal - result.used.personal).toBe(-82072);
+    expect(result.available).toBe(0);
+  });
+  it("separa los meses y acumula solamente las transferencias al ahorro", () => {
+    const result = summarize(
+      {
+        ...DEFAULT_DATA,
+        movements: [
+          movement("saving", 500000, "Ahorro", "2026-10-01"),
+          movement("saving", 250000, "Ahorro"),
+        ],
+      },
+      "2026-11",
+    );
+    expect(result.used.savings).toBe(250000);
+    expect(result.accumulated).toBe(750000);
+    expect(result.budget.savings).toBe(500000);
+  });
+  it("calcula el progreso de la meta de 500.000 y protege la división por cero", () => {
+    expect(progress(250000, 500000)).toBe(50);
+    expect(progress(250000, 0)).toBe(0);
+  });
+  it("editar o eliminar recalcula el saldo a partir de movimientos únicos", () => {
+    const income = movement("income", 1859928, "Salario");
+    const spending = movement("expense", 50000, "Alimentación");
+    expect(summarize({ ...DEFAULT_DATA, movements: [income, spending] }, "2026-11").available).toBe(
+      567928,
+    );
+    expect(
+      summarize({ ...DEFAULT_DATA, movements: [income, { ...spending, amount: 20000 }] }, "2026-11")
+        .available,
+    ).toBe(597928);
+    expect(summarize({ ...DEFAULT_DATA, movements: [income] }, "2026-11").available).toBe(617928);
+  });
+  it("editar noviembre no altera los presupuestos de octubre", () => {
+    const data = {
+      ...DEFAULT_DATA,
+      budgets: { "2026-11": { ...DEFAULT_BUDGET, transport: 300000 } },
+    };
+    expect(summarize(data, "2026-10").budget.transport).toBe(242000);
+    expect(summarize(data, "2026-11").budget.transport).toBe(300000);
+  });
+  it("valida cantidades positivas, pesos enteros y fechas reales", () => {
+    expect(movementSchema.safeParse(movement("expense", -1, "Transporte")).success).toBe(false);
+    expect(movementSchema.safeParse(movement("expense", 1.5, "Transporte")).success).toBe(false);
+    expect(
+      movementSchema.safeParse(movement("expense", 3000, "Transporte", "2026-02-30")).success,
+    ).toBe(false);
+  });
 });
